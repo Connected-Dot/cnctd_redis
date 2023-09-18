@@ -1,0 +1,1 @@
+A collection of methods using the redis-rs crate

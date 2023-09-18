@@ -1,0 +1,12 @@
+[package]
+name = "cnctd_redis"
+version = "0.1.2"
+edition = "2021"
+authors = ["Connected Dot Inc.", "Kyle Ebner <kyle@cnctd.world>"]
+description = "Custom wrapper for Redis support"
+license = "MIT"
+repository = "https://github.com/Connected-Dot/cnctd_redis"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
