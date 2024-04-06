@@ -1,30 +1,31 @@
-use redis::{Connection, Commands};
+use redis::{Client, RedisResult};
+use r2d2_redis::RedisConnectionManager;
+use r2d2::{Pool, PooledConnection}; 
+use state::InitCell;
+pub struct Redis;
 
-pub struct RedisStore {}
+type RedisPool = Pool<RedisConnectionManager>;
 
-impl RedisStore {
-    pub fn connect() -> Result<Connection, anyhow::Error> {
-        let client = redis::Client::open("redis://127.0.0.1/")?;
-        let con = client.get_connection()?;
-        Ok(con)
+static REDIS_POOL: InitCell<Option<RedisPool>> = InitCell::new();
+
+impl Redis {
+    pub fn start_pool(redis_url: &str) -> anyhow::Result<RedisPool> {
+        let manager = RedisConnectionManager::new(redis_url)?;
+        let pool = Pool::builder().build(manager)?;
+        REDIS_POOL.set(Some(pool.clone())); 
+
+        Ok(pool)
     }
 
-    pub fn set(key: &str, value: &str) -> Result<(), anyhow::Error> {
-        let mut connection = Self::connect()?;
-        connection.set(key, value)?;
-        Ok(())
+    pub fn get_pool() -> anyhow::Result<RedisPool> {
+        REDIS_POOL.get().clone().ok_or_else(|| anyhow::anyhow!("Redis pool not initialized"))
     }
 
-    pub fn get(key: &str) -> Result<String, anyhow::Error> {
-        let mut connection = Self::connect()?;
-        let value = connection.get(key)?;
-        Ok(value)
-    }
+    pub fn get_client() -> anyhow::Result<PooledConnection<RedisConnectionManager>> {
+        let pool = Self::get_pool()?;
+        let conn = pool.get()?;
 
-    pub fn delete(key: &str) -> Result<(), anyhow::Error> {
-        let mut connection = Self::connect()?;
-        connection.del(key)?;
-        Ok(())
+
+        Ok(conn)
     }
-    
 }
