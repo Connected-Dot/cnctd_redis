@@ -57,4 +57,15 @@ impl CnctdRedis {
         Ok(())
     }
 
+    pub fn hset<S>(key: &str, field: &str, value: S) -> anyhow::Result<()>
+    where S: Serialize + std::fmt::Debug + DeserializeOwned + Send + Sync + Clone + 'static {
+        let mut client = Self::get_client()?;
+        let value = serde_json::to_string(&value)?;
+
+        client.hset(key, field, value.clone())?;
+        client.publish(key, value)?;
+
+        Ok(())
+    }
+
 }
