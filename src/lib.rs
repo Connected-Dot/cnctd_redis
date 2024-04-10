@@ -1,4 +1,4 @@
-use redis::{Client, RedisResult};
+use redis::{Client, ConnectionLike, RedisResult};
 use r2d2_redis::{redis::Commands, RedisConnectionManager};
 use r2d2::{Pool, PooledConnection}; 
 use serde::{de::DeserializeOwned, Serialize};
@@ -68,4 +68,12 @@ impl CnctdRedis {
         Ok(())
     }
 
+    pub fn check_connection(redis_url: &str) -> anyhow::Result<()> {
+        let client = Client::open(redis_url)?;
+        let mut con = client.get_connection()?;
+        match con.check_connection() {
+            true => Ok(()),
+            false => Err(anyhow::anyhow!("Failed to connect to Redis")),
+        }
+    }
 }
