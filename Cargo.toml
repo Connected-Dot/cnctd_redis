@@ -1,6 +1,6 @@
 [package]
 name = "cnctd_redis"
-version = "0.1.7"
+version = "0.1.8"
 edition = "2021"
 authors = ["Connected Dot Inc.", "Kyle Ebner <kyle@cnctd.world>"]
 description = "Custom wrapper for Redis support"
@@ -10,10 +10,10 @@ repository = "https://github.com/Connected-Dot/cnctd_redis"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.82"
+anyhow = "1.0.100"
 r2d2 = "0.8.10"
 r2d2_redis = "0.14.0"
-redis = "0.25.3"
-serde = { version = "1.0.197", features = ["derive"] }
-serde_json = "1.0.115"
+redis = "1.0.2"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.148"
 state = "0.6.0"
